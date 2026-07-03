@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+next-env.d.ts
+
+# Env files — never commit API keys
+.env
+.env.*
+!.env.example
+
+# Build & coverage
+build/
+dist/
+coverage/
+
+# Supabase local dev
+supabase/.temp/
+
+# Logs & OS noise
+*.log
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
