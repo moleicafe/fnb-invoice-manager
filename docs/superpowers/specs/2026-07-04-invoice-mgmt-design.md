@@ -12,7 +12,7 @@ Inspired by [Shinasom/invoice_mgmt_no_db](https://github.com/Shinasom/invoice_mg
 **Priorities (in order):**
 1. Organize & archive invoices — never lose a paper invoice again
 2. Track spending & costs — spend per outlet/category/supplier; ingredient price trends
-3. Track payments owed — paid/unpaid with due dates from supplier credit terms
+3. Track payments owed — paid/unpaid with due dates from supplier credit terms; monthly supplier statements (账单) reconciled against received invoices
 4. Accounting & GST prep — monthly Excel export with GST (9%) broken out
 
 **Hard requirements:**
@@ -49,8 +49,10 @@ All tables in Supabase Postgres. RLS enforces role rules (§6).
 - **profiles** — `user_id (auth.users FK)`, `display_name`, `role` (`admin` | `staff`), `home_location_id`, `preferred_locale`
 - **locations** — `id`, `name`, `type` (`outlet` | `central_kitchen`), `active`
 - **suppliers** — `id`, `name`, `aliases text[]` (name variants for fuzzy matching), `default_category`, `payment_terms_days` (default 0 = cash), `active`
-- **invoices** — `id`, `supplier_id`, `location_id`, `invoice_number`, `invoice_date`, `currency` (default `SGD`), `subtotal`, `gst_amount`, `total`, `category` (`meat` | `vegetables` | `rice_dry_goods` | `packaging` | `misc`), `review_status` (`pending_review` | `approved` | `needs_manual_entry`), `payment_status` (`unpaid` | `paid`), `payment_due_date` (computed: invoice_date + supplier terms; editable), `paid_at`, `file_paths text[]` (multi-page support), `uploaded_by`, `approved_by`, `extraction_raw jsonb` (audit), `arithmetic_warning boolean`, `created_at`, `updated_at`
+- **invoices** — `id`, `supplier_id`, `location_id`, `invoice_number`, `invoice_date`, `currency` (default `SGD`), `subtotal`, `gst_amount`, `total`, `category` (`meat` | `vegetables` | `rice_dry_goods` | `packaging` | `rent_services` | `misc`), `review_status` (`pending_review` | `approved` | `needs_manual_entry`), `payment_status` (`unpaid` | `paid`), `payment_due_date` (computed: invoice_date + supplier terms; editable), `paid_at`, `file_paths text[]` (multi-page support), `uploaded_by`, `approved_by`, `extraction_raw jsonb` (audit), `arithmetic_warning boolean`, `created_at`, `updated_at`
 - **invoice_items** — `id`, `invoice_id`, `line_no`, `description` (original language, as extracted), `quantity`, `unit`, `unit_price`, `amount`
+- **statements** — monthly supplier statements (账单): `id`, `supplier_id`, `location_id` (nullable — statements are often per-outlet), `period_month`, `total_due`, `file_paths text[]`, `reconcile_status` (`open` | `partial` | `complete`), `paid_at` (nullable), `uploaded_by`, `extraction_raw jsonb`, timestamps
+- **statement_lines** — `id`, `statement_id`, `invoice_number`, `invoice_date`, `amount`, `matched_invoice_id` (nullable FK → invoices), `match_status` (`matched` | `missing_invoice` | `amount_mismatch`)
 
 Duplicate detection: on save, warn if an invoice with the same `(supplier_id, invoice_number)` exists; secondary heuristic warns on same supplier + date + total. Warn-and-confirm, never silently reject.
 
@@ -66,6 +68,17 @@ Duplicate detection: on save, warn if an invoice with the same `(supplier_id, in
 
 Arithmetic check: if `subtotal + gst_amount` differs from `total` by more than S$0.05, set `arithmetic_warning` and show a banner on the review form — warn, don't block.
 
+### Statement reconciliation flow
+
+1. At upload, the user chooses document type: **invoice** or **monthly statement**. The AI also classifies the document and the app warns on a mismatch (e.g. a statement uploaded as an invoice).
+2. For statements, extraction returns: supplier, period, and the list of `(invoice_number, date, amount)` lines plus the total due.
+3. Each line is matched against stored invoices for that supplier: primary key is normalized `invoice_number`; fallback is date + amount. Match statuses:
+   - `matched` — invoice exists and the amount agrees
+   - `missing_invoice` — the supplier billed for an invoice we never recorded (chase the paper, or the delivery never happened)
+   - `amount_mismatch` — invoice exists but amounts differ
+4. The reconciliation screen shows the statement lines with their statuses side-by-side with the statement file. Admins resolve mismatches (edit an invoice, add a missing one from its file, or dismiss a line).
+5. **Mark statement paid** (admin): sets the statement's `paid_at` and marks all matched invoices `paid` in one action.
+
 ## 5. Screens
 
 1. **Login** — email + password.
@@ -76,14 +89,16 @@ Arithmetic check: if `subtotal + gst_amount` differs from `total` by more than S
 6. **Suppliers** — list with payment terms, aliases, running totals; add/edit (admin).
 7. **Export** (admin) — month picker → Excel workbook: sheet 1 = one row per invoice with GST broken out; sheet 2 = all line items. CSV alternative.
 8. **Users & settings** (admin) — create staff accounts, assign roles and home outlets, manage locations.
+9. **Statements** — list of uploaded statements with reconcile status; detail view = extracted lines with match statuses side-by-side with the original file; actions: resolve mismatches, mark statement paid (admin).
 
 ## 6. Roles & permissions
 
 | Capability | Staff | Admin |
 |---|---|---|
-| Upload + correct extraction | ✅ | ✅ |
+| Upload + correct extraction (invoices & statements) | ✅ | ✅ |
 | View invoice list/detail | ✅ (read-only after submit) | ✅ |
 | Edit any invoice, approve, mark paid, delete | ❌ | ✅ |
+| Reconcile statements (resolve mismatches, mark paid) | ❌ | ✅ |
 | Dashboard, exports, suppliers, users | ❌ | ✅ |
 
 Enforced both in the UI and via Supabase Row Level Security policies.
@@ -104,8 +119,8 @@ Enforced both in the UI and via Supabase Row Level Security policies.
 
 ## 9. Testing
 
-- **Unit tests** (Vitest): extraction JSON schema validation, GST arithmetic check, due-date computation, supplier fuzzy-matching, export shaping.
-- **Golden set**: ~10 real invoices (Chinese + English, photos + PDFs) collected from the business, used to tune the extraction prompt and re-run when the prompt/model changes.
+- **Unit tests** (Vitest): extraction JSON schema validation, GST arithmetic check, due-date computation, supplier fuzzy-matching, statement-line matching (matched / missing / mismatch), export shaping.
+- **Golden set**: real documents from the business in `samples/golden/` (gitignored — private data): 8 phone photos of paper invoices (English, bilingual, thermal receipts), 2 rent invoice PDFs, 4 monthly statement PDFs (Chinese). Used to tune the extraction prompt and re-run when the prompt/model changes.
 - **E2E smoke** (Playwright): upload → review → approve → appears in list; language toggle.
 - **Manual**: full flow on an actual phone before staff rollout.
 

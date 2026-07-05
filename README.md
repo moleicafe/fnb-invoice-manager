@@ -11,6 +11,7 @@ Staff photograph paper invoices (or upload emailed PDFs) from their phones. Clau
 - 🏪 **Multi-outlet** — invoices tagged to outlets or the central kitchen, with per-location spending
 - 📈 **Price trends** — unit-price tracking per ingredient per supplier, to catch creeping costs
 - 💰 **Payment tracking** — paid/unpaid status with due dates auto-computed from supplier credit terms
+- 🧮 **Statement reconciliation** — monthly supplier statements (账单) auto-matched against received invoices, flagging missing or mismatched deliveries before payment
 - 🧾 **GST-ready exports** — monthly Excel export with GST broken out for the accountant
 - 👥 **Roles** — staff upload and correct; admins approve, edit, and see the dashboard
 
