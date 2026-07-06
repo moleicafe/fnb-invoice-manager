@@ -30,3 +30,6 @@ Thumbs.db
 # Editor
 .vscode/
 .idea/
+
+# Local agent scratch (SDD ledger, briefs, reports)
+.superpowers/
