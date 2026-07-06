@@ -14,6 +14,7 @@ export const lineItemSchema = z.object({
 export const invoiceExtractionSchema = z.object({
   document_type: z.enum(['invoice', 'statement', 'other']),
   supplier_name: z.string().nullable(),
+  outlet: z.string().nullable(),
   invoice_number: z.string().nullable(),
   invoice_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable(),
   line_items: z.array(lineItemSchema),

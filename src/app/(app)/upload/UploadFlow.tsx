@@ -33,6 +33,7 @@ interface ExtractResponse {
     suggested_category: string | null;
   };
   matchedSupplier: { id: string; name: string; default_category: string | null } | null;
+  matchedLocationId: string | null;
   duplicates: { id: string }[];
 }
 
@@ -75,7 +76,7 @@ export function UploadFlow(props: { locations: { id: string; name: string }[]; d
         filePaths: paths,
         banner: e.document_type !== 'invoice' ? 'wrongDocType' : null,
         initial: {
-          locationId: props.defaultLocationId,
+          locationId: payload.matchedLocationId ?? props.defaultLocationId,
           supplierId: payload.matchedSupplier?.id ?? null,
           supplierName: payload.matchedSupplier?.name ?? e.supplier_name ?? '',
           invoiceNumber: e.invoice_number ?? '',

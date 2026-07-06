@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { extractDocument, type DocumentFile } from '@/lib/extraction/extract';
 import { matchSupplier } from '@/lib/suppliers/match';
+import { matchLocation } from '@/lib/locations/match';
 
 export const maxDuration = 60; // Vercel: extraction can take ~30s on multi-page documents
 
@@ -45,14 +46,19 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'extraction_failed' }, { status: 502 });
   }
 
-  const { data: suppliers } = await supabase
-    .from('suppliers')
-    .select('id, name, aliases, default_category, payment_terms_days')
-    .eq('active', true);
+  const [{ data: suppliers }, { data: locations }] = await Promise.all([
+    supabase
+      .from('suppliers')
+      .select('id, name, aliases, default_category, payment_terms_days')
+      .eq('active', true),
+    supabase.from('locations').select('id, name, aliases').eq('active', true),
+  ]);
 
   const matchedSupplier = extraction.supplier_name
     ? matchSupplier(extraction.supplier_name, suppliers ?? [])
     : null;
+
+  const matchedLocationId = matchLocation(extraction.outlet, locations ?? [])?.id ?? null;
 
   let duplicates: { id: string; invoice_date: string | null; total: number | null }[] = [];
   if (matchedSupplier && extraction.invoice_number) {
@@ -64,5 +70,5 @@ export async function POST(request: Request) {
     duplicates = dupes ?? [];
   }
 
-  return NextResponse.json({ extraction, matchedSupplier, duplicates });
+  return NextResponse.json({ extraction, matchedSupplier, matchedLocationId, duplicates });
 }
