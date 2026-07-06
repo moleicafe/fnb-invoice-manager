@@ -1,5 +1,17 @@
 import { describe, it, expect } from 'vitest';
-import { computeDueDate, hasArithmeticWarning } from '../src/lib/invoice/checks';
+import { computeDueDate, hasArithmeticWarning, isValidIsoDate } from '../src/lib/invoice/checks';
+
+describe('isValidIsoDate', () => {
+  it('accepts a real date', () => {
+    expect(isValidIsoDate('2026-07-04')).toBe(true);
+  });
+  it('rejects an impossible calendar date', () => {
+    expect(isValidIsoDate('2026-02-30')).toBe(false);
+  });
+  it('rejects garbage', () => {
+    expect(isValidIsoDate('not-a-date')).toBe(false);
+  });
+});
 
 describe('computeDueDate', () => {
   it('adds the supplier terms to the invoice date', () => {
