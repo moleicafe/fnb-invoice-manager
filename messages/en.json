@@ -47,6 +47,7 @@
     "removeItem": "Remove",
     "arithmeticWarning": "Subtotal + GST does not match the total. Please double-check.",
     "duplicateConfirm": "An invoice with this supplier and invoice number already exists. Save anyway?",
+    "saveFailed": "Save failed. Please check your entries and try again.",
     "submit": "Save invoice"
   },
   "invoices": {

@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { ReviewForm, EMPTY_ITEM, type ReviewFormValues } from '@/components/ReviewForm';
+import { canEditInvoice, type Role } from '@/lib/auth/permissions';
 import type { Category } from '@/lib/categories';
 
 export default async function EditInvoicePage({ params }: { params: Promise<{ id: string }> }) {
@@ -14,6 +15,13 @@ export default async function EditInvoicePage({ params }: { params: Promise<{ id
     supabase.from('locations').select('id, name').eq('active', true).order('name'),
   ]);
   if (!invoice) notFound();
+
+  const { data: { user } } = await supabase.auth.getUser();
+  const { data: profile } = await supabase
+    .from('profiles').select('role').eq('user_id', user!.id).single();
+  if (!canEditInvoice((profile?.role ?? 'staff') as Role, invoice.uploaded_by, user!.id, invoice.review_status)) {
+    notFound();
+  }
 
   const s = (n: unknown) => (n == null ? '' : String(n));
   const supplier = invoice.suppliers as { id: string; name: string } | null;

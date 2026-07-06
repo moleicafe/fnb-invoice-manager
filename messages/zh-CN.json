@@ -47,6 +47,7 @@
     "removeItem": "删除",
     "arithmeticWarning": "小计 + GST 与总额不符，请核对。",
     "duplicateConfirm": "已存在相同供应商和发票号码的发票，仍要保存吗？",
+    "saveFailed": "保存失败，请检查后重试。",
     "submit": "保存发票"
   },
   "invoices": {

@@ -93,7 +93,7 @@ export function ReviewForm(props: {
     }
     if (!res.ok) {
       setBusy(false);
-      setServerError(`save failed (${res.status})`);
+      setServerError(t('review.saveFailed'));
       return;
     }
     const { id } = await res.json();
