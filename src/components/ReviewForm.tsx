@@ -15,6 +15,8 @@ export interface ReviewItemValues {
   unit: string;
   unitPrice: string;
   amount: string;
+  nameEn: string | null;
+  nameZh: string | null;
 }
 
 export interface ReviewFormValues {
@@ -31,7 +33,10 @@ export interface ReviewFormValues {
   extractionRaw: unknown | null;
 }
 
-export const EMPTY_ITEM: ReviewItemValues = { description: '', quantity: '', unit: '', unitPrice: '', amount: '' };
+export const EMPTY_ITEM: ReviewItemValues = {
+  description: '', quantity: '', unit: '', unitPrice: '', amount: '',
+  nameEn: null, nameZh: null,
+};
 
 function num(s: string): number | null {
   const v = parseFloat(s);
@@ -86,6 +91,8 @@ export function ReviewForm(props: {
             unit: it.unit.trim() || null,
             unitPrice: num(it.unitPrice),
             amount: num(it.amount),
+            nameEn: it.nameEn,
+            nameZh: it.nameZh,
           })),
       }),
     });

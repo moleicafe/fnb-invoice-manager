@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { Card } from '@/components/ui/card';
 import { StatusChip, type StatusKind } from '@/components/ui/badge';
@@ -8,6 +8,7 @@ import { Actions } from './ActionsPanel';
 export default async function InvoiceDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const t = await getTranslations();
+  const locale = await getLocale();
   const supabase = await createClient();
 
   const { data: invoice } = await supabase
@@ -127,7 +128,14 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
             <tbody>
               {items.map((it: Record<string, unknown>) => (
                 <tr key={String(it.id)} className="border-b border-border/60 last:border-0">
-                  <td className="p-3">{String(it.description)}</td>
+                  <td className="p-3">
+                    {String(it.description)}
+                    {(locale === 'en' ? it.name_en : it.name_zh) != null && (
+                      <span className="mt-0.5 block text-xs text-muted-foreground">
+                        {String(locale === 'en' ? it.name_en : it.name_zh)}
+                      </span>
+                    )}
+                  </td>
                   <td className="p-3 text-right tabular-nums">
                     {it.quantity == null ? '—' : String(it.quantity)}
                   </td>

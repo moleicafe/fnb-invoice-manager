@@ -14,7 +14,7 @@ interface ExtractResponse {
     supplier_name: string | null;
     invoice_number: string | null;
     invoice_date: string | null;
-    line_items: { description: string; quantity: number | null; unit: string | null; unit_price: number | null; amount: number | null }[];
+    line_items: { description: string; quantity: number | null; unit: string | null; unit_price: number | null; amount: number | null; name_en: string | null; name_zh: string | null }[];
     subtotal: number | null;
     gst_amount: number | null;
     total: number | null;
@@ -92,6 +92,7 @@ export function UploadFlow(props: { locations: { id: string; name: string }[]; d
           ? e.line_items.map((li) => ({
               description: li.description, quantity: s(li.quantity), unit: li.unit ?? '',
               unitPrice: s(li.unit_price), amount: s(li.amount),
+              nameEn: li.name_en, nameZh: li.name_zh,
             }))
           : [EMPTY_ITEM],
         extractionRaw: e,

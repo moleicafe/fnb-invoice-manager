@@ -30,6 +30,8 @@ export default async function EditInvoicePage({ params }: { params: Promise<{ id
     .map((it: Record<string, unknown>) => ({
       description: String(it.description), quantity: s(it.quantity), unit: it.unit ? String(it.unit) : '',
       unitPrice: s(it.unit_price), amount: s(it.amount),
+      nameEn: (it.name_en as string | null) ?? null,
+      nameZh: (it.name_zh as string | null) ?? null,
     }));
 
   const initial: ReviewFormValues = {
