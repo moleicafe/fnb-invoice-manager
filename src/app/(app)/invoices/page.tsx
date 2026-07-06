@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
-import { buttonStyles } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
 import { StatusChip, type StatusKind } from '@/components/ui/badge';
 import { fieldStyles } from '@/components/ui/field';
 
@@ -73,10 +73,10 @@ export default async function InvoicesPage({
           {t('invoices.to')}
           <input type="date" name="to" defaultValue={sp.to ?? ''} className={fieldStyles} />
         </label>
-        <button type="submit" className={buttonStyles('primary', 'md')}>
+        <button type="submit" className={buttonVariants()}>
           {t('invoices.apply')}
         </button>
-        <Link href="/invoices" className={buttonStyles('ghost', 'md')}>
+        <Link href="/invoices" className={buttonVariants({ variant: 'ghost' })}>
           {t('invoices.clear')}
         </Link>
       </form>

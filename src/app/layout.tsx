@@ -3,6 +3,7 @@ import { Inter, Calistoga, JetBrains_Mono } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
 import { BRANDING } from '@/branding';
+import { Toaster } from '@/components/ui/sonner';
 import type { Metadata } from 'next';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
@@ -23,7 +24,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           ['--color-accent-secondary' as string]: BRANDING.accentSecondary,
         }}
       >
-        <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
+        <NextIntlClientProvider messages={messages}>
+          {children}
+          <Toaster position="top-center" richColors />
+        </NextIntlClientProvider>
       </body>
     </html>
   );

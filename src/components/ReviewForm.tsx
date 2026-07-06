@@ -7,6 +7,15 @@ import { CATEGORIES, type Category } from '../lib/categories';
 import { hasArithmeticWarning } from '../lib/invoice/checks';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+} from './ui/alert-dialog';
 import { fieldStyles, fieldStylesCompact, labelStyles } from './ui/field';
 
 export interface ReviewItemValues {
@@ -57,6 +66,7 @@ export function ReviewForm(props: {
   const [v, setV] = useState(props.initial);
   const [busy, setBusy] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  const [dupOpen, setDupOpen] = useState(false);
 
   const arithmeticWarning = hasArithmeticWarning(num(v.subtotal), num(v.gst), num(v.total));
 
@@ -98,7 +108,7 @@ export function ReviewForm(props: {
     });
     if (res.status === 409) {
       setBusy(false);
-      if (window.confirm(t('review.duplicateConfirm'))) await submit(true);
+      setDupOpen(true);
       return;
     }
     if (!res.ok) {
@@ -235,6 +245,25 @@ export function ReviewForm(props: {
       <Button type="submit" size="lg" disabled={busy} className="w-full">
         {t('review.submit')}
       </Button>
+
+      <AlertDialog open={dupOpen} onOpenChange={setDupOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogDescription>{t('review.duplicateConfirm')}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                setDupOpen(false);
+                void submit(true);
+              }}
+            >
+              {t('common.confirm')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </form>
   );
 }
