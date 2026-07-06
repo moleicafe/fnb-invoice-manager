@@ -25,7 +25,14 @@
     "uploading": "Uploading…",
     "extracting": "Reading invoice with AI…",
     "extractionFailed": "AI could not read this document. Please fill in the details manually.",
-    "wrongDocType": "This looks like a monthly statement, not an invoice. Statement support is coming soon — you can still save it manually."
+    "wrongDocType": "This looks like a monthly statement, not an invoice. Statement support is coming soon — you can still save it manually.",
+    "modeMultiple": "Each file is a separate invoice",
+    "modeSinglePages": "All files are pages of one invoice",
+    "progress": "Invoice {current} of {total}",
+    "skip": "Skip",
+    "batchDone": "{saved} of {total} invoices saved",
+    "uploadMore": "Upload more",
+    "viewInvoices": "View invoices"
   },
   "review": {
     "title": "Check the extracted details",

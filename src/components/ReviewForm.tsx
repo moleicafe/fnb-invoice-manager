@@ -60,6 +60,7 @@ export function ReviewForm(props: {
   newSupplier: boolean;
   submitUrl: string;
   method: 'POST' | 'PATCH';
+  onSaved?: (id: string) => void;
 }) {
   const t = useTranslations();
   const router = useRouter();
@@ -117,7 +118,12 @@ export function ReviewForm(props: {
       return;
     }
     const { id } = await res.json();
-    router.push(`/invoices/${id}`);
+    if (props.onSaved) {
+      setBusy(false);
+      props.onSaved(id as string);
+    } else {
+      router.push(`/invoices/${id}`);
+    }
   }
 
   const warningBanner =

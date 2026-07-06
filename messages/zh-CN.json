@@ -25,7 +25,14 @@
     "uploading": "正在上传…",
     "extracting": "AI 识别中…",
     "extractionFailed": "AI 无法识别该文件，请手动填写。",
-    "wrongDocType": "这看起来是月度账单而不是发票。账单功能即将推出——您仍可手动保存。"
+    "wrongDocType": "这看起来是月度账单而不是发票。账单功能即将推出——您仍可手动保存。",
+    "modeMultiple": "每个文件是一张独立发票",
+    "modeSinglePages": "所有文件是同一张发票的多页",
+    "progress": "第 {current} 张，共 {total} 张",
+    "skip": "跳过",
+    "batchDone": "已保存 {saved} / {total} 张发票",
+    "uploadMore": "继续上传",
+    "viewInvoices": "查看发票"
   },
   "review": {
     "title": "核对识别结果",
