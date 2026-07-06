@@ -1,0 +1,87 @@
+{
+  "common": {
+    "appName": "F&B Invoice Manager",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "loading": "Loading…",
+    "signOut": "Sign out"
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "email": "Email",
+    "password": "Password",
+    "signInError": "Sign-in failed. Check your email and password."
+  },
+  "nav": {
+    "upload": "Upload",
+    "invoices": "Invoices"
+  },
+  "upload": {
+    "title": "Upload invoice",
+    "selectLocation": "Outlet / kitchen",
+    "selectFiles": "Take photo or choose files",
+    "uploading": "Uploading…",
+    "extracting": "Reading invoice with AI…",
+    "extractionFailed": "AI could not read this document. Please fill in the details manually.",
+    "wrongDocType": "This looks like a monthly statement, not an invoice. Statement support is coming soon — you can still save it manually."
+  },
+  "review": {
+    "title": "Check the extracted details",
+    "supplier": "Supplier",
+    "newSupplierHint": "New supplier — will be created",
+    "invoiceNumber": "Invoice number",
+    "invoiceDate": "Invoice date",
+    "category": "Category",
+    "subtotal": "Subtotal",
+    "gst": "GST",
+    "total": "Total",
+    "items": "Line items",
+    "description": "Description",
+    "quantity": "Qty",
+    "unit": "Unit",
+    "unitPrice": "Unit price",
+    "amount": "Amount",
+    "addItem": "Add line",
+    "removeItem": "Remove",
+    "arithmeticWarning": "Subtotal + GST does not match the total. Please double-check.",
+    "duplicateConfirm": "An invoice with this supplier and invoice number already exists. Save anyway?",
+    "submit": "Save invoice"
+  },
+  "invoices": {
+    "title": "Invoices",
+    "status": "Review status",
+    "paymentStatus": "Payment",
+    "location": "Location",
+    "from": "From",
+    "to": "To",
+    "apply": "Filter",
+    "clear": "Clear",
+    "date": "Date",
+    "number": "No.",
+    "total": "Total",
+    "all": "All",
+    "pending_review": "Pending review",
+    "approved": "Approved",
+    "needs_manual_entry": "Manual entry",
+    "unpaid": "Unpaid",
+    "paid": "Paid",
+    "empty": "No invoices yet"
+  },
+  "detail": {
+    "approve": "Approve",
+    "markPaid": "Mark as paid",
+    "deleteConfirm": "Delete this invoice?",
+    "original": "Original document",
+    "dueDate": "Payment due"
+  },
+  "categories": {
+    "meat": "Meat",
+    "vegetables": "Vegetables",
+    "rice_dry_goods": "Rice & dry goods",
+    "packaging": "Packaging",
+    "rent_services": "Rent & services",
+    "misc": "Miscellaneous"
+  }
+}
