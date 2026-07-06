@@ -14,6 +14,9 @@ describe('computeDueDate', () => {
   it('throws on an invalid date', () => {
     expect(() => computeDueDate('not-a-date', 30)).toThrow();
   });
+  it('throws on an impossible calendar date', () => {
+    expect(() => computeDueDate('2026-02-30', 0)).toThrow();
+  });
 });
 
 describe('hasArithmeticWarning', () => {
@@ -32,5 +35,11 @@ describe('hasArithmeticWarning', () => {
   it('never warns when subtotal or total is missing', () => {
     expect(hasArithmeticWarning(null, 5, 100)).toBe(false);
     expect(hasArithmeticWarning(100, 5, null)).toBe(false);
+  });
+  it('does not warn at exactly S$0.05 difference (inclusive boundary)', () => {
+    expect(hasArithmeticWarning(100, 0, 100.05)).toBe(false);
+  });
+  it('warns just past the boundary', () => {
+    expect(hasArithmeticWarning(100, 0, 100.06)).toBe(true);
   });
 });

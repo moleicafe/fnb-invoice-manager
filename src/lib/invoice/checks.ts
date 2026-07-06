@@ -1,6 +1,8 @@
 export function computeDueDate(invoiceDate: string, termsDays: number): string {
   const d = new Date(`${invoiceDate}T00:00:00Z`);
-  if (Number.isNaN(d.getTime())) throw new Error(`invalid invoice date: ${invoiceDate}`);
+  if (Number.isNaN(d.getTime()) || d.toISOString().slice(0, 10) !== invoiceDate) {
+    throw new Error(`invalid invoice date: ${invoiceDate}`);
+  }
   d.setUTCDate(d.getUTCDate() + termsDays);
   return d.toISOString().slice(0, 10);
 }
