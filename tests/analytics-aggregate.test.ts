@@ -474,7 +474,7 @@ describe("counters", () => {
         category: "office",
         supplier_name: "Supplier A",
         payment_status: "unpaid",
-        review_status: "pending",
+        review_status: "pending_review",
         payment_due_date: "2026-07-20",
       },
       {
@@ -492,7 +492,7 @@ describe("counters", () => {
         category: "supplies",
         supplier_name: "Supplier C",
         payment_status: "unpaid",
-        review_status: "pending",
+        review_status: "pending_review",
         payment_due_date: "2026-07-25",
       },
     ];
@@ -511,7 +511,7 @@ describe("counters", () => {
         category: "office",
         supplier_name: "Supplier A",
         payment_status: "unpaid",
-        review_status: "pending",
+        review_status: "pending_review",
         payment_due_date: "2026-07-20",
       },
       {
@@ -529,7 +529,7 @@ describe("counters", () => {
         category: "supplies",
         supplier_name: "Supplier C",
         payment_status: "unpaid",
-        review_status: "pending",
+        review_status: "pending_review",
         payment_due_date: "2026-07-25",
       },
     ];
@@ -548,7 +548,7 @@ describe("counters", () => {
         category: "office",
         supplier_name: "Supplier A",
         payment_status: "unpaid",
-        review_status: "pending",
+        review_status: "pending_review",
         payment_due_date: "2026-07-20", // within 14 days (day 14)
       },
       {
@@ -566,7 +566,7 @@ describe("counters", () => {
         category: "supplies",
         supplier_name: "Supplier C",
         payment_status: "unpaid",
-        review_status: "pending",
+        review_status: "pending_review",
         payment_due_date: "2026-07-06", // today (day 0)
       },
       {
@@ -595,7 +595,7 @@ describe("counters", () => {
         category: "office",
         supplier_name: "Supplier A",
         payment_status: "unpaid",
-        review_status: "pending",
+        review_status: "pending_review",
         payment_due_date: "2026-07-20",
       },
       {

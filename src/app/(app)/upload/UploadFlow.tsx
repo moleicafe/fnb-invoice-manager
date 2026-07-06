@@ -58,40 +58,46 @@ export function UploadFlow(props: { locations: { id: string; name: string }[]; d
   }
 
   async function extractJob(paths: string[]): Promise<Job> {
-    const res = await fetch('/api/extract', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ paths }),
-    });
-    setSettled((n) => n + 1);
-    if (!res.ok) {
-      return { filePaths: paths, banner: 'failed', initial: blankValues(), duplicates: [], newSupplier: true };
+    const failed: Job = { filePaths: paths, banner: 'failed', initial: blankValues(), duplicates: [], newSupplier: true };
+    try {
+      const res = await fetch('/api/extract', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ paths }),
+      });
+      setSettled((n) => n + 1);
+      if (!res.ok) {
+        return failed;
+      }
+      const payload = (await res.json()) as ExtractResponse;
+      const e = payload.extraction;
+      return {
+        filePaths: paths,
+        banner: e.document_type !== 'invoice' ? 'wrongDocType' : null,
+        initial: {
+          locationId: props.defaultLocationId,
+          supplierId: payload.matchedSupplier?.id ?? null,
+          supplierName: payload.matchedSupplier?.name ?? e.supplier_name ?? '',
+          invoiceNumber: e.invoice_number ?? '',
+          invoiceDate: e.invoice_date ?? '',
+          category: (e.suggested_category ?? payload.matchedSupplier?.default_category ?? 'misc') as ReviewFormValues['category'],
+          subtotal: s(e.subtotal), gst: s(e.gst_amount), total: s(e.total),
+          items: e.line_items.length
+            ? e.line_items.map((li) => ({
+                description: li.description, quantity: s(li.quantity), unit: li.unit ?? '',
+                unitPrice: s(li.unit_price), amount: s(li.amount),
+                nameEn: li.name_en, nameZh: li.name_zh,
+              }))
+            : [EMPTY_ITEM],
+          extractionRaw: e,
+        },
+        duplicates: payload.duplicates,
+        newSupplier: !payload.matchedSupplier,
+      };
+    } catch {
+      setSettled((n) => n + 1);
+      return failed;
     }
-    const payload = (await res.json()) as ExtractResponse;
-    const e = payload.extraction;
-    return {
-      filePaths: paths,
-      banner: e.document_type !== 'invoice' ? 'wrongDocType' : null,
-      initial: {
-        locationId: props.defaultLocationId,
-        supplierId: payload.matchedSupplier?.id ?? null,
-        supplierName: payload.matchedSupplier?.name ?? e.supplier_name ?? '',
-        invoiceNumber: e.invoice_number ?? '',
-        invoiceDate: e.invoice_date ?? '',
-        category: (e.suggested_category ?? payload.matchedSupplier?.default_category ?? 'misc') as ReviewFormValues['category'],
-        subtotal: s(e.subtotal), gst: s(e.gst_amount), total: s(e.total),
-        items: e.line_items.length
-          ? e.line_items.map((li) => ({
-              description: li.description, quantity: s(li.quantity), unit: li.unit ?? '',
-              unitPrice: s(li.unit_price), amount: s(li.amount),
-              nameEn: li.name_en, nameZh: li.name_zh,
-            }))
-          : [EMPTY_ITEM],
-        extractionRaw: e,
-      },
-      duplicates: payload.duplicates,
-      newSupplier: !payload.matchedSupplier,
-    };
   }
 
   async function onFiles(fileList: FileList | null) {

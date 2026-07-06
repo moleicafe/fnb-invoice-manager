@@ -246,7 +246,7 @@ export function counters(rows: InvoiceRow[], todayIso: string): Counters {
 
   rows.forEach((row) => {
     // Count pending review
-    if (row.review_status === "pending") {
+    if (row.review_status === "pending_review") {
       pendingReview += 1;
     }
 

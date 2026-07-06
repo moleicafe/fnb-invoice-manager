@@ -10,7 +10,7 @@ export function MonthlyBar({ data }: { data: { month: string; total: number }[] 
           <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#64748b' }} axisLine={false} tickLine={false} />
           <YAxis tick={{ fontSize: 11, fill: '#64748b' }} axisLine={false} tickLine={false} width={48} />
           <Tooltip formatter={(v) => Number(v).toFixed(2)} cursor={{ fill: 'rgba(0,82,255,0.04)' }} />
-          <Bar dataKey="total" fill="#0052ff" radius={[6, 6, 0, 0]} />
+          <Bar dataKey="total" fill="var(--color-accent)" radius={[6, 6, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

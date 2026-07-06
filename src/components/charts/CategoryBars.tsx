@@ -18,7 +18,7 @@ export function CategoryBars({ data }: { data: { name: string; total: number }[]
             tickFormatter={(v) => String(v).slice(0, 18)}
           />
           <Tooltip formatter={(v) => Number(v).toFixed(2)} cursor={{ fill: 'rgba(0,82,255,0.04)' }} />
-          <Bar dataKey="total" fill="#0052ff" radius={[0, 6, 6, 0]} />
+          <Bar dataKey="total" fill="var(--color-accent)" radius={[0, 6, 6, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>
