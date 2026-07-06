@@ -24,6 +24,11 @@ For an invoice, extract:
   西安面馆 outlets) — never return the buyer as the supplier.
 - invoice_number and invoice_date (convert any printed format to YYYY-MM-DD).
 - every line item, with description copied VERBATIM in its original language (do not translate).
+- name_en / name_zh: a concise standardized product name for the line item in
+  BOTH English and Simplified Chinese (translate whichever is missing; strip
+  item codes, sizes and pack counts). Example: "切有机菜花 (次品)" ->
+  name_en "Organic Cauliflower (defective)", name_zh "有机菜花（次品）".
+  Use null only when you cannot identify the product.
 - quantity, unit, unit_price, amount as plain numbers; null when not printed.
 - subtotal, gst_amount (the GST/tax line), total — null when the document does not print the value.
   Never compute a missing value yourself.

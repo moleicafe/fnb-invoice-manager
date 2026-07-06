@@ -72,6 +72,8 @@ export async function PATCH(request: Request, ctx: { params: Promise<{ id: strin
         unit: it.unit,
         unit_price: it.unitPrice,
         amount: it.amount,
+        name_en: it.nameEn,
+        name_zh: it.nameZh,
       })),
     );
     if (itemsError) return NextResponse.json({ error: 'items_insert_failed' }, { status: 500 });

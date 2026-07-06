@@ -7,6 +7,8 @@ export const lineItemSchema = z.object({
   unit: z.string().nullable(),
   unit_price: z.number().nullable(),
   amount: z.number().nullable(),
+  name_en: z.string().nullable(),
+  name_zh: z.string().nullable(),
 });
 
 export const invoiceExtractionSchema = z.object({

@@ -8,6 +8,8 @@ const itemSchema = z.object({
   unit: z.string().nullable(),
   unitPrice: z.number().nullable(),
   amount: z.number().nullable(),
+  nameEn: z.string().nullable(),
+  nameZh: z.string().nullable(),
 });
 
 export const saveInvoiceSchema = z.object({

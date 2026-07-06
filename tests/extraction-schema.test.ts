@@ -8,7 +8,15 @@ const valid = {
   invoice_number: '260704000669-1',
   invoice_date: '2026-07-04',
   line_items: [
-    { description: '切有机菜花 (次品) Cut Organic Cauliflower (Defective)', quantity: 8.5, unit: 'kg', unit_price: 1.0, amount: 8.5 },
+    {
+      description: '切有机菜花 (次品) Cut Organic Cauliflower (Defective)',
+      quantity: 8.5,
+      unit: 'kg',
+      unit_price: 1.0,
+      amount: 8.5,
+      name_en: 'Organic Cauliflower (defective)',
+      name_zh: '有机菜花（次品）',
+    },
   ],
   subtotal: 8.5,
   gst_amount: 0.77,
@@ -29,6 +37,17 @@ describe('invoiceExtractionSchema', () => {
   });
   it('rejects a non-ISO date', () => {
     expect(invoiceExtractionSchema.safeParse({ ...valid, invoice_date: '04/07/2026' }).success).toBe(false);
+  });
+  it('accepts null standardized names', () => {
+    const sparseNames = {
+      ...valid,
+      line_items: [{ ...valid.line_items[0], name_en: null, name_zh: null }],
+    };
+    expect(invoiceExtractionSchema.parse(sparseNames).line_items[0].name_en).toBeNull();
+  });
+  it('rejects a line item missing the name fields', () => {
+    const { name_en: _en, name_zh: _zh, ...noNames } = valid.line_items[0];
+    expect(invoiceExtractionSchema.safeParse({ ...valid, line_items: [noNames] }).success).toBe(false);
   });
 });
 

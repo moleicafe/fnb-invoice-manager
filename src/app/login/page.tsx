@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
+import { brandName } from '@/branding';
 import { createClient } from '@/lib/supabase/client';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { Button } from '@/components/ui/button';
@@ -12,8 +13,8 @@ import { fieldStyles, labelStyles } from '@/components/ui/field';
 
 export default function LoginPage() {
   const t = useTranslations('auth');
-  const tCommon = useTranslations('common');
   const router = useRouter();
+  const locale = useLocale();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(false);
@@ -36,7 +37,7 @@ export default function LoginPage() {
 
   // Gradient-highlight the last word of the headline (design-system signature);
   // for zh-CN the whole compact headline takes the gradient.
-  const appName = tCommon('appName');
+  const appName = brandName(locale);
   const words = appName.split(' ');
   const leading = words.slice(0, -1).join(' ');
   const last = words[words.length - 1];

@@ -7,6 +7,15 @@ import { CATEGORIES, type Category } from '../lib/categories';
 import { hasArithmeticWarning } from '../lib/invoice/checks';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+} from './ui/alert-dialog';
 import { fieldStyles, fieldStylesCompact, labelStyles } from './ui/field';
 
 export interface ReviewItemValues {
@@ -15,6 +24,8 @@ export interface ReviewItemValues {
   unit: string;
   unitPrice: string;
   amount: string;
+  nameEn: string | null;
+  nameZh: string | null;
 }
 
 export interface ReviewFormValues {
@@ -31,7 +42,10 @@ export interface ReviewFormValues {
   extractionRaw: unknown | null;
 }
 
-export const EMPTY_ITEM: ReviewItemValues = { description: '', quantity: '', unit: '', unitPrice: '', amount: '' };
+export const EMPTY_ITEM: ReviewItemValues = {
+  description: '', quantity: '', unit: '', unitPrice: '', amount: '',
+  nameEn: null, nameZh: null,
+};
 
 function num(s: string): number | null {
   const v = parseFloat(s);
@@ -46,12 +60,14 @@ export function ReviewForm(props: {
   newSupplier: boolean;
   submitUrl: string;
   method: 'POST' | 'PATCH';
+  onSaved?: (id: string) => void;
 }) {
   const t = useTranslations();
   const router = useRouter();
   const [v, setV] = useState(props.initial);
   const [busy, setBusy] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  const [dupOpen, setDupOpen] = useState(false);
 
   const arithmeticWarning = hasArithmeticWarning(num(v.subtotal), num(v.gst), num(v.total));
 
@@ -86,12 +102,14 @@ export function ReviewForm(props: {
             unit: it.unit.trim() || null,
             unitPrice: num(it.unitPrice),
             amount: num(it.amount),
+            nameEn: it.nameEn,
+            nameZh: it.nameZh,
           })),
       }),
     });
     if (res.status === 409) {
       setBusy(false);
-      if (window.confirm(t('review.duplicateConfirm'))) await submit(true);
+      setDupOpen(true);
       return;
     }
     if (!res.ok) {
@@ -100,7 +118,12 @@ export function ReviewForm(props: {
       return;
     }
     const { id } = await res.json();
-    router.push(`/invoices/${id}`);
+    if (props.onSaved) {
+      setBusy(false);
+      props.onSaved(id as string);
+    } else {
+      router.push(`/invoices/${id}`);
+    }
   }
 
   const warningBanner =
@@ -228,6 +251,25 @@ export function ReviewForm(props: {
       <Button type="submit" size="lg" disabled={busy} className="w-full">
         {t('review.submit')}
       </Button>
+
+      <AlertDialog open={dupOpen} onOpenChange={setDupOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogDescription>{t('review.duplicateConfirm')}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                setDupOpen(false);
+                void submit(true);
+              }}
+            >
+              {t('common.confirm')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </form>
   );
 }

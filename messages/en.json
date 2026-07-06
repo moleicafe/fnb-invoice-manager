@@ -1,8 +1,8 @@
 {
   "common": {
-    "appName": "F&B Invoice Manager",
     "save": "Save",
     "cancel": "Cancel",
+    "confirm": "Confirm",
     "edit": "Edit",
     "delete": "Delete",
     "loading": "Loading…",
@@ -16,7 +16,8 @@
   },
   "nav": {
     "upload": "Upload",
-    "invoices": "Invoices"
+    "invoices": "Invoices",
+    "dashboard": "Dashboard"
   },
   "upload": {
     "title": "Upload invoice",
@@ -25,7 +26,14 @@
     "uploading": "Uploading…",
     "extracting": "Reading invoice with AI…",
     "extractionFailed": "AI could not read this document. Please fill in the details manually.",
-    "wrongDocType": "This looks like a monthly statement, not an invoice. Statement support is coming soon — you can still save it manually."
+    "wrongDocType": "This looks like a monthly statement, not an invoice. Statement support is coming soon — you can still save it manually.",
+    "modeMultiple": "Each file is a separate invoice",
+    "modeSinglePages": "All files are pages of one invoice",
+    "progress": "Invoice {current} of {total}",
+    "skip": "Skip",
+    "batchDone": "{saved} of {total} invoices saved",
+    "uploadMore": "Upload more",
+    "viewInvoices": "View invoices"
   },
   "review": {
     "title": "Check the extracted details",
@@ -84,5 +92,26 @@
     "packaging": "Packaging",
     "rent_services": "Rent & services",
     "misc": "Miscellaneous"
+  },
+  "dashboard": {
+    "title": "Analysis",
+    "month": "Month",
+    "monthlySpend": "Monthly spend",
+    "byCategory": "By category",
+    "topSuppliers": "Top suppliers",
+    "topItems": "Top items",
+    "item": "Item",
+    "spend": "Spend",
+    "avgUnitPrice": "Avg unit price",
+    "priceDelta": "vs last month",
+    "pendingReview": "Pending review",
+    "unpaidTotal": "Unpaid total",
+    "dueSoon": "Due in 14 days",
+    "insights": "AI insights",
+    "generate": "Generate",
+    "regenerate": "Regenerate",
+    "generating": "Generating…",
+    "noReport": "No report yet for this month.",
+    "noData": "No data"
   }
 }
