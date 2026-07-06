@@ -34,8 +34,10 @@ The uploading/extracting states show a spinning loader (CSS `animate-spin` SVG a
 - New `src/branding.ts` — the single file a customer deployment edits:
   ```ts
   export const BRANDING = {
-    appName: { en: 'Ming Yuan F&B', 'zh-CN': '裕华园' },
-    logoGlyph: '裕',            // 1–2 chars shown in the gradient logo tile
+    // Per-locale shape so other customers can localize; Ming Yuan uses the
+    // English name in both languages (裕华园 is an outlet, not the company).
+    appName: { en: 'Ming Yuan F&B', 'zh-CN': 'Ming Yuan F&B' },
+    logoGlyph: 'MY',            // 1–2 chars shown in the gradient logo tile
     logoUrl: null as string | null, // optional /public path; overrides glyph
     accent: '#0052FF',
     accentSecondary: '#4D7CFF',
@@ -44,6 +46,16 @@ The uploading/extracting states show a spinning loader (CSS `animate-spin` SVG a
 - Header, login headline, and `<title>` metadata read `BRANDING.appName[locale]` instead of `messages.common.appName` (the message key is removed from both files — parity test keeps guarding the rest).
 - Accent colors are injected as CSS-variable overrides in the root layout so one config edit re-skins buttons, gradients, chips, and shadows.
 - Each customer = their own deployment (own Supabase + Vercel project + this config). Multi-tenancy is explicitly out of scope.
+
+## 4b. Outlets (data correction)
+
+The real outlet list is exactly two (the v1 seed guesses were wrong):
+**Woodlands 兀兰** and **Chinese Garden 裕华园**. Migration 003 deactivates all
+existing seeded locations and inserts these two as active outlets. The
+existing location picker on the review form already covers "select which
+outlet the invoice is for" — this is a data fix, not a new feature. Old
+invoices keep their original location reference (inactive locations still
+display by name; they just stop appearing in pickers/filters).
 
 ## 5. Cursor fix
 
