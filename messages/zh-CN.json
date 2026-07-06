@@ -1,0 +1,88 @@
+{
+  "common": {
+    "appName": "餐饮发票管理",
+    "save": "保存",
+    "cancel": "取消",
+    "edit": "编辑",
+    "delete": "删除",
+    "loading": "加载中…",
+    "signOut": "退出登录"
+  },
+  "auth": {
+    "signIn": "登录",
+    "email": "邮箱",
+    "password": "密码",
+    "signInError": "登录失败，请检查邮箱和密码。"
+  },
+  "nav": {
+    "upload": "上传",
+    "invoices": "发票"
+  },
+  "upload": {
+    "title": "上传发票",
+    "selectLocation": "门店 / 中央厨房",
+    "selectFiles": "拍照或选择文件",
+    "uploading": "正在上传…",
+    "extracting": "AI 识别中…",
+    "extractionFailed": "AI 无法识别该文件，请手动填写。",
+    "wrongDocType": "这看起来是月度账单而不是发票。账单功能即将推出——您仍可手动保存。"
+  },
+  "review": {
+    "title": "核对识别结果",
+    "supplier": "供应商",
+    "newSupplierHint": "新供应商——将自动创建",
+    "invoiceNumber": "发票号码",
+    "invoiceDate": "发票日期",
+    "category": "类别",
+    "subtotal": "小计",
+    "gst": "消费税 (GST)",
+    "total": "总额",
+    "items": "明细",
+    "description": "品名",
+    "quantity": "数量",
+    "unit": "单位",
+    "unitPrice": "单价",
+    "amount": "金额",
+    "addItem": "添加一行",
+    "removeItem": "删除",
+    "arithmeticWarning": "小计 + GST 与总额不符，请核对。",
+    "duplicateConfirm": "已存在相同供应商和发票号码的发票，仍要保存吗？",
+    "saveFailed": "保存失败，请检查后重试。",
+    "submit": "保存发票"
+  },
+  "invoices": {
+    "title": "发票",
+    "status": "审核状态",
+    "paymentStatus": "付款状态",
+    "location": "门店",
+    "from": "从",
+    "to": "至",
+    "apply": "筛选",
+    "clear": "清除",
+    "date": "日期",
+    "number": "号码",
+    "total": "总额",
+    "all": "全部",
+    "pending_review": "待审核",
+    "approved": "已审核",
+    "needs_manual_entry": "手动录入",
+    "unpaid": "未付款",
+    "paid": "已付款",
+    "empty": "暂无发票"
+  },
+  "detail": {
+    "approve": "审核通过",
+    "markPaid": "标记已付款",
+    "deleteConfirm": "确定删除该发票？",
+    "original": "原始文件",
+    "dueDate": "付款到期日"
+  },
+  "categories": {
+    "meat": "肉类",
+    "vegetables": "蔬菜",
+    "rice_dry_goods": "米粮干货",
+    "packaging": "包装耗材",
+    "rent_services": "租金及服务",
+    "misc": "其他"
+  }
+}

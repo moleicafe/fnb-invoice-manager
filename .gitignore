@@ -18,6 +18,7 @@ samples/
 build/
 dist/
 coverage/
+tsconfig.tsbuildinfo
 
 # Supabase local dev
 supabase/.temp/
@@ -30,3 +31,6 @@ Thumbs.db
 # Editor
 .vscode/
 .idea/
+
+# Local agent scratch (SDD ledger, briefs, reports)
+.superpowers/
