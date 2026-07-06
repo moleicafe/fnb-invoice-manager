@@ -9,15 +9,14 @@
 alter function public.set_updated_at() set search_path = public;
 
 -- 2. Remove the internal SECURITY DEFINER helpers from the public REST/RPC
---    surface. They are only meant to be used internally (is_admin by RLS
---    policies; handle_new_user by the auth.users trigger), never called
---    directly over /rest/v1/rpc.
+--    surface. Supabase grants EXECUTE to anon/authenticated explicitly (not
+--    only via PUBLIC), so revoke from those roles by name.
 --
---    RLS policies evaluate is_admin() in the *authenticated* role's context,
---    so authenticated must keep EXECUTE — we drop only the PUBLIC/anon grant.
-revoke execute on function public.is_admin() from public;
-grant execute on function public.is_admin() to authenticated;
-
 --    handle_new_user() only ever runs as the auth.users INSERT trigger, which
---    fires regardless of EXECUTE grants — so it needs no public grant at all.
-revoke execute on function public.handle_new_user() from public;
+--    fires as its definer regardless of these grants — remove it entirely.
+revoke execute on function public.handle_new_user() from public, anon, authenticated;
+
+--    is_admin() is invoked inside RLS policies in the *authenticated* role's
+--    context, so authenticated must keep EXECUTE; strip only public + anon.
+revoke execute on function public.is_admin() from public, anon;
+grant execute on function public.is_admin() to authenticated;
