@@ -18,6 +18,7 @@ samples/
 build/
 dist/
 coverage/
+tsconfig.tsbuildinfo
 
 # Supabase local dev
 supabase/.temp/
