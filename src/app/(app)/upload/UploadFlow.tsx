@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { createClient } from '@/lib/supabase/client';
 import { ReviewForm, EMPTY_ITEM, type ReviewFormValues } from '@/components/ReviewForm';
+import { Spinner } from '@/components/ui/spinner';
 
 type Phase = 'pick' | 'uploading' | 'extracting' | 'review';
 
@@ -161,9 +162,7 @@ export function UploadFlow(props: { locations: { id: string; name: string }[]; d
         </label>
       ) : (
         <div className="flex w-full max-w-xl flex-col items-center gap-5 rounded-2xl border border-border bg-card p-14 shadow-md">
-          <span className="relative flex h-3 w-3">
-            <span className="absolute inline-flex h-full w-full animate-pulse-dot rounded-full bg-accent" />
-          </span>
+          <Spinner className="h-8 w-8" />
           <p className="font-mono text-xs uppercase tracking-[0.15em] text-accent">
             {phase === 'uploading' ? t('uploading') : t('extracting')}
           </p>
