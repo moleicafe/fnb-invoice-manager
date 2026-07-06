@@ -5,6 +5,7 @@ import { toContentBlocks } from '../src/lib/extraction/extract';
 const valid = {
   document_type: 'invoice',
   supplier_name: 'EBUY PTE. LTD.',
+  outlet: '30 WOODLANDS AVENUE 2 #01-22 WOODLANDS MRT STATION',
   invoice_number: '260704000669-1',
   invoice_date: '2026-07-04',
   line_items: [

@@ -22,6 +22,9 @@ Classify document_type first:
 For an invoice, extract:
 - supplier_name: the ISSUING company. The buyer is MING YUAN F&B PTE LTD (裕华园 / 千味山东大包 /
   西安面馆 outlets) — never return the buyer as the supplier.
+- outlet: the buyer's branch/outlet this invoice was delivered or billed to, copied verbatim —
+  a branch code ("WLD", "MY-WLDBAO"), a Chinese branch name (兀兰, 裕华园), or the delivery
+  address line. Pick the most specific identifier printed; null when nothing indicates a branch.
 - invoice_number and invoice_date (convert any printed format to YYYY-MM-DD).
 - every line item, with description copied VERBATIM in its original language (do not translate).
 - name_en / name_zh: a concise standardized product name for the line item in
