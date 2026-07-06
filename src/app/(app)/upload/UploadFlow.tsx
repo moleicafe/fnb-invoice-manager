@@ -103,8 +103,12 @@ export function UploadFlow(props: { locations: { id: string; name: string }[]; d
 
   if (phase === 'review' && review) {
     return (
-      <div className="flex flex-col gap-3">
-        {banner && <p className="rounded bg-amber-100 p-2 text-sm">{banner}</p>}
+      <div className="flex flex-col gap-4">
+        {banner && (
+          <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+            {banner}
+          </p>
+        )}
         <ReviewForm
           initial={review.initial}
           locations={props.locations}
@@ -119,12 +123,34 @@ export function UploadFlow(props: { locations: { id: string; name: string }[]; d
   }
 
   return (
-    <div className="flex flex-col items-center gap-4 pt-8">
-      <h1 className="text-lg font-semibold">{t('title')}</h1>
-      {banner && <p className="rounded bg-amber-100 p-2 text-sm">{banner}</p>}
+    <div className="relative flex flex-col items-center gap-8 pt-10 sm:pt-16">
+      {/* Ambient glow behind the dropzone */}
+      <div className="pointer-events-none absolute left-1/2 top-8 h-72 w-72 -translate-x-1/2 rounded-full bg-accent/5 blur-[120px]" />
+
+      <h1 className="font-display text-3xl tracking-tight sm:text-4xl">{t('title')}</h1>
+      {banner && (
+        <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          {banner}
+        </p>
+      )}
       {phase === 'pick' ? (
-        <label className="cursor-pointer rounded-lg border-2 border-dashed p-10 text-center text-sm text-gray-600">
-          {t('selectFiles')}
+        <label className="group relative w-full max-w-xl cursor-pointer rounded-2xl border-2 border-dashed border-border bg-card p-10 text-center shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-xl sm:p-14">
+          <div className="gradient-accent mx-auto flex h-14 w-14 items-center justify-center rounded-2xl shadow-accent transition-transform duration-300 group-hover:scale-110">
+            <svg
+              className="h-7 w-7 text-accent-foreground"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M12 16V4m0 0 4 4m-4-4-4 4" />
+              <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+            </svg>
+          </div>
+          <p className="mt-5 text-base font-medium text-foreground">{t('selectFiles')}</p>
           <input
             type="file"
             accept="image/*,application/pdf"
@@ -134,9 +160,14 @@ export function UploadFlow(props: { locations: { id: string; name: string }[]; d
           />
         </label>
       ) : (
-        <p className="text-sm text-gray-600">
-          {phase === 'uploading' ? t('uploading') : t('extracting')}
-        </p>
+        <div className="flex w-full max-w-xl flex-col items-center gap-5 rounded-2xl border border-border bg-card p-14 shadow-md">
+          <span className="relative flex h-3 w-3">
+            <span className="absolute inline-flex h-full w-full animate-pulse-dot rounded-full bg-accent" />
+          </span>
+          <p className="font-mono text-xs uppercase tracking-[0.15em] text-accent">
+            {phase === 'uploading' ? t('uploading') : t('extracting')}
+          </p>
+        </div>
       )}
     </div>
   );

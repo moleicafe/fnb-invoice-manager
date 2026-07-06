@@ -16,7 +16,7 @@ export function LanguageSwitcher() {
     <button
       type="button"
       onClick={() => switchTo(locale === 'en' ? 'zh-CN' : 'en')}
-      className="text-sm underline"
+      className="rounded-full border border-border bg-card px-3 py-1.5 font-mono text-xs uppercase tracking-[0.1em] text-muted-foreground transition-all duration-200 hover:border-accent/30 hover:text-accent"
     >
       {locale === 'en' ? '中文' : 'EN'}
     </button>

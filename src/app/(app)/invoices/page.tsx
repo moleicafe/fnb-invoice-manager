@@ -1,6 +1,9 @@
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
+import { buttonStyles } from '@/components/ui/button';
+import { StatusChip, type StatusKind } from '@/components/ui/badge';
+import { fieldStyles } from '@/components/ui/field';
 
 export default async function InvoicesPage({
   searchParams,
@@ -28,79 +31,105 @@ export default async function InvoicesPage({
   const { data: invoices } = await query;
 
   const rel = (v: unknown) => (v as { name: string } | null)?.name ?? '—';
-  const select = 'rounded border p-2 text-sm';
+  const filterLabel = 'flex flex-col gap-1.5 text-xs font-medium text-muted-foreground';
 
   return (
-    <div className="flex flex-col gap-4">
-      <h1 className="text-lg font-semibold">{t('invoices.title')}</h1>
+    <div className="flex flex-col gap-6">
+      <h1 className="font-display text-2xl tracking-tight sm:text-3xl">{t('invoices.title')}</h1>
 
-      <form method="GET" className="flex flex-wrap items-end gap-2 text-sm">
-        <label className="flex flex-col gap-1">
+      <form
+        method="GET"
+        className="flex flex-wrap items-end gap-3 rounded-2xl border border-border bg-card p-4 shadow-md"
+      >
+        <label className={filterLabel}>
           {t('invoices.status')}
-          <select name="status" defaultValue={sp.status ?? ''} className={select}>
+          <select name="status" defaultValue={sp.status ?? ''} className={fieldStyles}>
             <option value="">{t('invoices.all')}</option>
             <option value="pending_review">{t('invoices.pending_review')}</option>
             <option value="approved">{t('invoices.approved')}</option>
             <option value="needs_manual_entry">{t('invoices.needs_manual_entry')}</option>
           </select>
         </label>
-        <label className="flex flex-col gap-1">
+        <label className={filterLabel}>
           {t('invoices.paymentStatus')}
-          <select name="payment" defaultValue={sp.payment ?? ''} className={select}>
+          <select name="payment" defaultValue={sp.payment ?? ''} className={fieldStyles}>
             <option value="">{t('invoices.all')}</option>
             <option value="unpaid">{t('invoices.unpaid')}</option>
             <option value="paid">{t('invoices.paid')}</option>
           </select>
         </label>
-        <label className="flex flex-col gap-1">
+        <label className={filterLabel}>
           {t('invoices.location')}
-          <select name="location" defaultValue={sp.location ?? ''} className={select}>
+          <select name="location" defaultValue={sp.location ?? ''} className={fieldStyles}>
             <option value="">{t('invoices.all')}</option>
             {(locations ?? []).map((l) => <option key={l.id} value={l.id}>{l.name}</option>)}
           </select>
         </label>
-        <label className="flex flex-col gap-1">
+        <label className={filterLabel}>
           {t('invoices.from')}
-          <input type="date" name="from" defaultValue={sp.from ?? ''} className={select} />
+          <input type="date" name="from" defaultValue={sp.from ?? ''} className={fieldStyles} />
         </label>
-        <label className="flex flex-col gap-1">
+        <label className={filterLabel}>
           {t('invoices.to')}
-          <input type="date" name="to" defaultValue={sp.to ?? ''} className={select} />
+          <input type="date" name="to" defaultValue={sp.to ?? ''} className={fieldStyles} />
         </label>
-        <button type="submit" className="rounded bg-blue-600 px-3 py-2 text-white">{t('invoices.apply')}</button>
-        <Link href="/invoices" className="px-2 py-2 underline">{t('invoices.clear')}</Link>
+        <button type="submit" className={buttonStyles('primary', 'md')}>
+          {t('invoices.apply')}
+        </button>
+        <Link href="/invoices" className={buttonStyles('ghost', 'md')}>
+          {t('invoices.clear')}
+        </Link>
       </form>
 
       {(invoices ?? []).length === 0 ? (
-        <p className="text-sm text-gray-500">{t('invoices.empty')}</p>
+        <div className="rounded-2xl border border-dashed border-border bg-card/50 p-16 text-center">
+          <p className="text-sm text-muted-foreground">{t('invoices.empty')}</p>
+        </div>
       ) : (
-        <div className="overflow-x-auto rounded border bg-white">
+        <div className="overflow-x-auto rounded-2xl border border-border bg-card shadow-md">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b text-left text-xs text-gray-500">
-                <th className="p-2">{t('invoices.date')}</th>
-                <th className="p-2">{t('review.supplier')}</th>
-                <th className="p-2">{t('invoices.number')}</th>
-                <th className="p-2">{t('invoices.location')}</th>
-                <th className="p-2">{t('review.category')}</th>
-                <th className="p-2 text-right">{t('invoices.total')}</th>
-                <th className="p-2">{t('invoices.status')}</th>
-                <th className="p-2">{t('invoices.paymentStatus')}</th>
+              <tr className="border-b border-border text-left font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground">
+                <th className="p-3 font-medium">{t('invoices.date')}</th>
+                <th className="p-3 font-medium">{t('review.supplier')}</th>
+                <th className="p-3 font-medium">{t('invoices.number')}</th>
+                <th className="p-3 font-medium">{t('invoices.location')}</th>
+                <th className="p-3 font-medium">{t('review.category')}</th>
+                <th className="p-3 text-right font-medium">{t('invoices.total')}</th>
+                <th className="p-3 font-medium">{t('invoices.status')}</th>
+                <th className="p-3 font-medium">{t('invoices.paymentStatus')}</th>
               </tr>
             </thead>
             <tbody>
               {(invoices ?? []).map((inv) => (
-                <tr key={inv.id} className="border-b hover:bg-gray-50">
-                  <td className="p-2">
-                    <Link href={`/invoices/${inv.id}`} className="block">{inv.invoice_date ?? '—'}</Link>
+                <tr
+                  key={inv.id}
+                  className="border-b border-border/60 transition-colors duration-150 last:border-0 hover:bg-accent/[0.03]"
+                >
+                  <td className="p-3 font-medium">
+                    <Link href={`/invoices/${inv.id}`} className="block text-accent hover:underline">
+                      {inv.invoice_date ?? '—'}
+                    </Link>
                   </td>
-                  <td className="p-2">{rel(inv.suppliers)}</td>
-                  <td className="p-2">{inv.invoice_number ?? '—'}</td>
-                  <td className="p-2">{rel(inv.locations)}</td>
-                  <td className="p-2">{t(`categories.${inv.category}`)}</td>
-                  <td className="p-2 text-right">{inv.total != null ? Number(inv.total).toFixed(2) : '—'}</td>
-                  <td className="p-2">{t(`invoices.${inv.review_status}`)}</td>
-                  <td className="p-2">{t(`invoices.${inv.payment_status}`)}</td>
+                  <td className="p-3">{rel(inv.suppliers)}</td>
+                  <td className="p-3 text-muted-foreground">{inv.invoice_number ?? '—'}</td>
+                  <td className="p-3">{rel(inv.locations)}</td>
+                  <td className="p-3 text-muted-foreground">{t(`categories.${inv.category}`)}</td>
+                  <td className="p-3 text-right font-medium tabular-nums">
+                    {inv.total != null ? Number(inv.total).toFixed(2) : '—'}
+                  </td>
+                  <td className="p-3">
+                    <StatusChip
+                      kind={inv.review_status as StatusKind}
+                      label={t(`invoices.${inv.review_status}`)}
+                    />
+                  </td>
+                  <td className="p-3">
+                    <StatusChip
+                      kind={inv.payment_status as StatusKind}
+                      label={t(`invoices.${inv.payment_status}`)}
+                    />
+                  </td>
                 </tr>
               ))}
             </tbody>
