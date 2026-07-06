@@ -16,7 +16,8 @@
   },
   "nav": {
     "upload": "上传",
-    "invoices": "发票"
+    "invoices": "发票",
+    "dashboard": "数据分析"
   },
   "upload": {
     "title": "上传发票",
@@ -91,5 +92,26 @@
     "packaging": "包装耗材",
     "rent_services": "租金及服务",
     "misc": "其他"
+  },
+  "dashboard": {
+    "title": "数据分析",
+    "month": "月份",
+    "monthlySpend": "月度支出",
+    "byCategory": "按类别",
+    "topSuppliers": "主要供应商",
+    "topItems": "主要商品",
+    "item": "商品",
+    "spend": "支出",
+    "avgUnitPrice": "平均单价",
+    "priceDelta": "环比",
+    "pendingReview": "待审核",
+    "unpaidTotal": "未付款总额",
+    "dueSoon": "14 天内到期",
+    "insights": "AI 分析",
+    "generate": "生成分析",
+    "regenerate": "重新生成",
+    "generating": "生成中…",
+    "noReport": "本月尚未生成分析报告。",
+    "noData": "暂无数据"
   }
 }

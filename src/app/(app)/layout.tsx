@@ -3,10 +3,18 @@ import { getTranslations, getLocale } from 'next-intl/server';
 import { BRANDING, brandName } from '@/branding';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { signOut } from '@/lib/auth/actions';
+import { createClient } from '@/lib/supabase/server';
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const t = await getTranslations();
   const locale = await getLocale();
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const { data: profile } = user
+    ? await supabase.from('profiles').select('role').eq('user_id', user.id).single()
+    : { data: null };
   return (
     <div className="min-h-screen">
       <header className="sticky top-0 z-20 border-b border-border bg-card/80 backdrop-blur-md">
@@ -35,6 +43,14 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             >
               {t('nav.invoices')}
             </Link>
+            {profile?.role === 'admin' && (
+              <Link
+                href="/dashboard"
+                className="rounded-lg px-3 py-2 text-muted-foreground transition-colors duration-200 hover:bg-muted hover:text-foreground"
+              >
+                {t('nav.dashboard')}
+              </Link>
+            )}
           </nav>
           <div className="ml-auto flex items-center gap-2">
             <LanguageSwitcher />
