@@ -28,6 +28,13 @@ This app replaces the drawer.
 
 ![Dashboard](docs/screenshots/dashboard.png)
 
+**Phone-first, in both languages.** Staff use it one-handed at the loading dock: bottom tab navigation, camera capture, generous touch targets.
+
+<p>
+  <img src="docs/screenshots/mobile-upload-zh-CN.png" width="49%" alt="Mobile upload screen, Chinese UI" />
+  <img src="docs/screenshots/mobile-dashboard-en.png" width="49%" alt="Mobile dashboard, English UI" />
+</p>
+
 ## Features
 
 - 📸 **Snap & extract** — photos and PDFs; Claude Opus 4.8 vision with structured outputs (zod-validated JSON, never free text)
