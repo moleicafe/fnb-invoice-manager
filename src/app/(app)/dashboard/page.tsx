@@ -57,18 +57,18 @@ export default async function DashboardPage({
         </form>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <Card className="p-6">
-          <p className="text-sm text-muted-foreground">{t('dashboard.pendingReview')}</p>
-          <p className="mt-2 text-3xl font-semibold tabular-nums">{data.counters.pendingReview}</p>
+      <div className="grid grid-cols-3 gap-2 sm:gap-4">
+        <Card className="p-3 sm:p-6">
+          <p className="text-xs text-muted-foreground sm:text-sm">{t('dashboard.pendingReview')}</p>
+          <p className="mt-1 text-xl font-semibold tabular-nums sm:mt-2 sm:text-3xl">{data.counters.pendingReview}</p>
         </Card>
-        <Card className="p-6">
-          <p className="text-sm text-muted-foreground">{t('dashboard.unpaidTotal')}</p>
-          <p className="mt-2 text-3xl font-semibold tabular-nums">{money(data.counters.unpaidTotal)}</p>
+        <Card className="p-3 sm:p-6">
+          <p className="text-xs text-muted-foreground sm:text-sm">{t('dashboard.unpaidTotal')}</p>
+          <p className="mt-1 text-xl font-semibold tabular-nums sm:mt-2 sm:text-3xl">{money(data.counters.unpaidTotal)}</p>
         </Card>
-        <Card className="p-6">
-          <p className="text-sm text-muted-foreground">{t('dashboard.dueSoon')}</p>
-          <p className="mt-2 text-3xl font-semibold tabular-nums">{money(data.counters.dueSoonTotal)}</p>
+        <Card className="p-3 sm:p-6">
+          <p className="text-xs text-muted-foreground sm:text-sm">{t('dashboard.dueSoon')}</p>
+          <p className="mt-1 text-xl font-semibold tabular-nums sm:mt-2 sm:text-3xl">{money(data.counters.dueSoonTotal)}</p>
         </Card>
       </div>
 
