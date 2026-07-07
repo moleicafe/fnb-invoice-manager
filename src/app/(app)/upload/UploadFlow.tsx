@@ -4,17 +4,23 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { createClient } from '@/lib/supabase/client';
-import { ReviewForm, EMPTY_ITEM, type ReviewFormValues } from '@/components/ReviewForm';
+import { ReviewForm, EMPTY_ITEM, buildInvoicePayload, type ReviewFormValues } from '@/components/ReviewForm';
 import { Spinner } from '@/components/ui/spinner';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
-type Phase = 'pick' | 'working' | 'wizard' | 'done';
+type Phase = 'pick' | 'working' | 'saving' | 'wizard' | 'done';
 type Mode = 'batch' | 'pages';
+
+// Set to true to restore the original flow where a human reviews every
+// invoice before it saves. With false (current default), clean extractions
+// auto-save as pending_review; only problem cases (failed extraction,
+// non-invoice document, possible duplicate) go through the review form.
+const REVIEW_BEFORE_SAVE = false;
 
 interface Job {
   filePaths: string[];
-  banner: 'failed' | 'wrongDocType' | null;
+  banner: 'failed' | 'wrongDocType' | 'duplicate' | null;
   initial: ReviewFormValues;
   duplicates: { id: string }[];
   newSupplier: boolean;
@@ -44,6 +50,7 @@ export function UploadFlow(props: { locations: { id: string; name: string }[]; d
   const [mode, setMode] = useState<Mode>('batch');
   const [phase, setPhase] = useState<Phase>('pick');
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [queue, setQueue] = useState<Job[]>([]);
   const [current, setCurrent] = useState(0);
   const [savedCount, setSavedCount] = useState(0);
   const [settled, setSettled] = useState(0);
@@ -129,21 +136,59 @@ export function UploadFlow(props: { locations: { id: string; name: string }[]; d
     setJobs(results);
     setCurrent(0);
     setSavedCount(0);
-    setPhase('wizard');
+
+    if (REVIEW_BEFORE_SAVE) {
+      setQueue(results);
+      setPhase('wizard');
+      return;
+    }
+
+    // Auto-save: clean extractions save immediately (as pending_review);
+    // problem cases queue for the review form.
+    setPhase('saving');
+    setSettled(0);
+    const attention: Job[] = [];
+    let saved = 0;
+    for (const job of results) {
+      if (job.banner !== null || job.duplicates.length > 0) {
+        attention.push(job.duplicates.length > 0 && job.banner === null ? { ...job, banner: 'duplicate' } : job);
+        setSettled((n) => n + 1);
+        continue;
+      }
+      try {
+        const res = await fetch('/api/invoices', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(buildInvoicePayload(job.initial, job.filePaths, false)),
+        });
+        if (res.ok) saved += 1;
+        else attention.push({ ...job, banner: res.status === 409 ? 'duplicate' : 'failed' });
+      } catch {
+        attention.push({ ...job, banner: 'failed' });
+      }
+      setSettled((n) => n + 1);
+    }
+    setSavedCount(saved);
+    if (attention.length > 0) {
+      setQueue(attention);
+      setPhase('wizard');
+    } else {
+      setPhase('done');
+    }
   }
 
   function advance() {
-    if (current + 1 < jobs.length) setCurrent(current + 1);
+    if (current + 1 < queue.length) setCurrent(current + 1);
     else setPhase('done');
   }
 
-  if (phase === 'wizard' && jobs[current]) {
-    const job = jobs[current];
+  if (phase === 'wizard' && queue[current]) {
+    const job = queue[current];
     return (
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <p className="font-mono text-xs uppercase tracking-[0.15em] text-accent">
-            {t('progress', { current: current + 1, total: jobs.length })}
+            {t('progress', { current: current + 1, total: queue.length })}
           </p>
           <button type="button" className={buttonVariants({ variant: 'ghost', size: 'sm' })} onClick={advance}>
             {t('skip')}
@@ -151,7 +196,11 @@ export function UploadFlow(props: { locations: { id: string; name: string }[]; d
         </div>
         {job.banner && (
           <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-            {job.banner === 'failed' ? t('extractionFailed') : t('wrongDocType')}
+            {job.banner === 'failed'
+              ? t('extractionFailed')
+              : job.banner === 'duplicate'
+                ? t('possibleDuplicate')
+                : t('wrongDocType')}
           </p>
         )}
         <ReviewForm
@@ -189,6 +238,7 @@ export function UploadFlow(props: { locations: { id: string; name: string }[]; d
               size="lg"
               onClick={() => {
                 setJobs([]);
+                setQueue([]);
                 setCurrent(0);
                 setSavedCount(0);
                 setPhase('pick');
@@ -265,7 +315,7 @@ export function UploadFlow(props: { locations: { id: string; name: string }[]; d
         <div className="flex w-full max-w-xl flex-col items-center gap-5 rounded-2xl border border-border bg-card p-14 shadow-md">
           <Spinner className="h-8 w-8" />
           <p className="font-mono text-xs uppercase tracking-[0.15em] text-accent">
-            {t('extracting')} {settled}/{total}
+            {phase === 'saving' ? t('autoSaving') : t('extracting')} {settled}/{total}
           </p>
         </div>
       )}

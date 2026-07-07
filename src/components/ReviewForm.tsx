@@ -52,6 +52,40 @@ function num(s: string): number | null {
   return Number.isFinite(v) ? v : null;
 }
 
+// Shared with the auto-save path in UploadFlow — one source of truth for the
+// wire shape of POST/PATCH /api/invoices.
+export function buildInvoicePayload(
+  v: ReviewFormValues,
+  filePaths: string[],
+  confirmedDuplicate: boolean,
+) {
+  return {
+    locationId: v.locationId,
+    supplierId: v.supplierId,
+    supplierName: v.supplierName.trim(),
+    invoiceNumber: v.invoiceNumber.trim() || null,
+    invoiceDate: v.invoiceDate || null,
+    category: v.category,
+    subtotal: num(v.subtotal),
+    gstAmount: num(v.gst),
+    total: num(v.total),
+    filePaths,
+    extractionRaw: v.extractionRaw,
+    confirmedDuplicate,
+    items: v.items
+      .filter((it) => it.description.trim())
+      .map((it) => ({
+        description: it.description.trim(),
+        quantity: num(it.quantity),
+        unit: it.unit.trim() || null,
+        unitPrice: num(it.unitPrice),
+        amount: num(it.amount),
+        nameEn: it.nameEn,
+        nameZh: it.nameZh,
+      })),
+  };
+}
+
 export function ReviewForm(props: {
   initial: ReviewFormValues;
   locations: { id: string; name: string }[];
@@ -81,31 +115,7 @@ export function ReviewForm(props: {
     const res = await fetch(props.submitUrl, {
       method: props.method,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        locationId: v.locationId,
-        supplierId: v.supplierId,
-        supplierName: v.supplierName.trim(),
-        invoiceNumber: v.invoiceNumber.trim() || null,
-        invoiceDate: v.invoiceDate || null,
-        category: v.category,
-        subtotal: num(v.subtotal),
-        gstAmount: num(v.gst),
-        total: num(v.total),
-        filePaths: props.filePaths,
-        extractionRaw: v.extractionRaw,
-        confirmedDuplicate,
-        items: v.items
-          .filter((it) => it.description.trim())
-          .map((it) => ({
-            description: it.description.trim(),
-            quantity: num(it.quantity),
-            unit: it.unit.trim() || null,
-            unitPrice: num(it.unitPrice),
-            amount: num(it.amount),
-            nameEn: it.nameEn,
-            nameZh: it.nameZh,
-          })),
-      }),
+      body: JSON.stringify(buildInvoicePayload(v, props.filePaths, confirmedDuplicate)),
     });
     if (res.status === 409) {
       setBusy(false);

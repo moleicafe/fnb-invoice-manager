@@ -33,7 +33,9 @@
     "skip": "Skip",
     "batchDone": "{saved} of {total} invoices saved",
     "uploadMore": "Upload more",
-    "viewInvoices": "View invoices"
+    "viewInvoices": "View invoices",
+    "autoSaving": "Saving invoices…",
+    "possibleDuplicate": "Possible duplicate — check before saving"
   },
   "review": {
     "title": "Check the extracted details",

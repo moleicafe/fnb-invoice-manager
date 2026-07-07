@@ -33,7 +33,9 @@
     "skip": "跳过",
     "batchDone": "已保存 {saved} / {total} 张发票",
     "uploadMore": "继续上传",
-    "viewInvoices": "查看发票"
+    "viewInvoices": "查看发票",
+    "autoSaving": "正在保存发票…",
+    "possibleDuplicate": "疑似重复发票——请确认后再保存"
   },
   "review": {
     "title": "核对识别结果",
