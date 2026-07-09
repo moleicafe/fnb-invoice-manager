@@ -92,21 +92,6 @@ cp .env.example .env.local   # fill in Supabase URL/key + Anthropic API key
 **Testing extraction against real documents:** put samples in `samples/` (gitignored) and run
 `npm run extract:sample -- samples/your-invoice.jpg` to see exactly what Claude returns.
 
-## White-labelling
-
-Everything customer-facing lives in [`src/branding.ts`](src/branding.ts):
-
-```ts
-export const BRANDING = {
-  appName: { en: 'Ming Yuan F&B', 'zh-CN': 'Ming Yuan F&B' },
-  logoGlyph: 'MY',            // or point logoUrl at /public/logo.png
-  logoUrl: null,
-  accent: '#0052ff',          // re-skins every gradient, button, chip, and chart
-  accentSecondary: '#4d7cff',
-};
-```
-
-One deployment per customer (own Supabase + own Vercel project + this file) keeps every business's data fully isolated.
 
 ## Roadmap
 
